@@ -20,9 +20,15 @@ import {
   Loader2,
   Trophy,
   Target,
+  CreditCard,
+  Crown,
+  Calendar,
+  AlertCircle,
+  Sparkles,
 } from "lucide-react";
 import Link from "next/link";
 import { AppShell } from "@/components/layout/app-shell";
+import { useSubscription } from "@/lib/hooks/useSubscription";
 
 // Sports list - synced with iOS mobile app (OnboardingModels.swift)
 const SPORTS = [
@@ -77,6 +83,20 @@ export default function ProfilePage() {
   const [mounted, setMounted] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+
+  // Subscription state
+  const {
+    billing,
+    hasAccess,
+    isTrialing,
+    trialDaysLeft,
+    isCanceled,
+    actionLoading,
+    createCheckout,
+    openCustomerPortal,
+    reactivateSubscription,
+    pricing,
+  } = useSubscription();
 
   // Edit form state
   const [editForm, setEditForm] = useState({
@@ -427,6 +447,186 @@ export default function ProfilePage() {
               </>
             )}
           </div>
+        </GlassCard>
+
+        {/* Subscription & Billing */}
+        <GlassCard className="mb-6">
+          <h2
+            className="text-lg font-semibold mb-4 flex items-center gap-2"
+            style={{ color: "var(--text-primary)" }}
+          >
+            <CreditCard className="w-5 h-5" style={{ color: "var(--accent-blue)" }} />
+            Subscription
+          </h2>
+
+          {/* Active/Trial Subscription */}
+          {hasAccess && (
+            <div className="space-y-4">
+              {/* Status Badge */}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div
+                    className="w-10 h-10 rounded-full flex items-center justify-center"
+                    style={{ backgroundColor: "var(--accent-gold)/20" }}
+                  >
+                    <Crown className="w-5 h-5" style={{ color: "var(--accent-gold)" }} />
+                  </div>
+                  <div>
+                    <p className="font-semibold" style={{ color: "var(--text-primary)" }}>
+                      {isTrialing ? "Free Trial" : "Premium"}
+                    </p>
+                    <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
+                      {billing?.planType === "yearly" ? "Yearly Plan" : "Monthly Plan"}
+                    </p>
+                  </div>
+                </div>
+                <div
+                  className={`px-3 py-1 rounded-full text-xs font-medium ${
+                    isCanceled
+                      ? "bg-red-500/20 text-red-400"
+                      : isTrialing
+                      ? "bg-amber-500/20 text-amber-400"
+                      : "bg-green-500/20 text-green-400"
+                  }`}
+                >
+                  {isCanceled ? "Canceling" : isTrialing ? "Trial" : "Active"}
+                </div>
+              </div>
+
+              {/* Trial Info */}
+              {isTrialing && trialDaysLeft > 0 && (
+                <div
+                  className="p-3 rounded-xl flex items-center gap-3"
+                  style={{ backgroundColor: "var(--glass-overlay-secondary)" }}
+                >
+                  <Calendar className="w-5 h-5" style={{ color: "var(--accent-cyan)" }} />
+                  <div>
+                    <p className="text-sm font-medium" style={{ color: "var(--text-primary)" }}>
+                      {trialDaysLeft} day{trialDaysLeft !== 1 ? "s" : ""} left in trial
+                    </p>
+                    <p className="text-xs" style={{ color: "var(--text-secondary)" }}>
+                      Ends {billing?.trialEndDate ? new Date(billing.trialEndDate).toLocaleDateString() : "soon"}
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {/* Cancellation Warning */}
+              {isCanceled && billing?.currentPeriodEnd && (
+                <div
+                  className="p-3 rounded-xl flex items-start gap-3"
+                  style={{ backgroundColor: "rgba(239, 68, 68, 0.1)" }}
+                >
+                  <AlertCircle className="w-5 h-5 mt-0.5 text-red-400" />
+                  <div>
+                    <p className="text-sm font-medium text-red-400">
+                      Subscription ending
+                    </p>
+                    <p className="text-xs" style={{ color: "var(--text-secondary)" }}>
+                      Access until {new Date(billing.currentPeriodEnd).toLocaleDateString()}
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {/* Actions */}
+              <div className="flex gap-3">
+                {isCanceled ? (
+                  <Button
+                    variant="gradient"
+                    className="flex-1"
+                    onClick={() => reactivateSubscription()}
+                    disabled={actionLoading}
+                  >
+                    {actionLoading ? (
+                      <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                    ) : (
+                      <Sparkles className="w-4 h-4 mr-2" />
+                    )}
+                    Reactivate
+                  </Button>
+                ) : (
+                  <Button
+                    variant="glass"
+                    className="flex-1"
+                    onClick={() => openCustomerPortal()}
+                    disabled={actionLoading}
+                  >
+                    {actionLoading ? (
+                      <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                    ) : (
+                      <CreditCard className="w-4 h-4 mr-2" />
+                    )}
+                    Manage Billing
+                  </Button>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* No Subscription - Upgrade CTA */}
+          {!hasAccess && (
+            <div className="space-y-4">
+              <div
+                className="p-4 rounded-xl text-center"
+                style={{ backgroundColor: "var(--glass-overlay-secondary)" }}
+              >
+                <Crown
+                  className="w-12 h-12 mx-auto mb-3"
+                  style={{ color: "var(--accent-gold)" }}
+                />
+                <h3
+                  className="font-semibold mb-1"
+                  style={{ color: "var(--text-primary)" }}
+                >
+                  Unlock Premium
+                </h3>
+                <p
+                  className="text-sm mb-4"
+                  style={{ color: "var(--text-secondary)" }}
+                >
+                  Get unlimited access to all features
+                </p>
+
+                {/* Pricing Options */}
+                <div className="grid grid-cols-2 gap-3 mb-4">
+                  <button
+                    onClick={() => createCheckout("monthly")}
+                    disabled={actionLoading}
+                    className="p-3 rounded-xl border-2 border-transparent hover:border-[var(--accent-blue)] transition-all"
+                    style={{ backgroundColor: "var(--glass-overlay-primary)" }}
+                  >
+                    <p className="font-bold" style={{ color: "var(--text-primary)" }}>
+                      ${pricing.monthly.amount}
+                    </p>
+                    <p className="text-xs" style={{ color: "var(--text-secondary)" }}>
+                      per month
+                    </p>
+                  </button>
+                  <button
+                    onClick={() => createCheckout("yearly")}
+                    disabled={actionLoading}
+                    className="p-3 rounded-xl border-2 border-[var(--accent-gold)] relative"
+                    style={{ backgroundColor: "var(--glass-overlay-primary)" }}
+                  >
+                    <span className="absolute -top-2 left-1/2 -translate-x-1/2 text-xs px-2 py-0.5 rounded-full bg-[var(--accent-gold)] text-black font-medium">
+                      Save {pricing.yearly.savings}
+                    </span>
+                    <p className="font-bold" style={{ color: "var(--text-primary)" }}>
+                      ${pricing.yearly.amount}
+                    </p>
+                    <p className="text-xs" style={{ color: "var(--text-secondary)" }}>
+                      per year
+                    </p>
+                  </button>
+                </div>
+
+                <p className="text-xs" style={{ color: "var(--text-secondary)" }}>
+                  3-day free trial included
+                </p>
+              </div>
+            </div>
+          )}
         </GlassCard>
 
           {/* Sign Out */}
