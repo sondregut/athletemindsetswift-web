@@ -1,26 +1,195 @@
 @import "tailwindcss";
 
+/* Chase Sapphire Reserve Theme - Light Mode */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Background gradients */
+  --background-top: #e8e3d8;
+  --background-middle: #d9d0c2;
+  --background-bottom: #ccc5b8;
+
+  /* Glass card colors */
+  --glass-overlay-primary: rgba(255, 255, 255, 0.6);
+  --glass-overlay-secondary: rgba(255, 255, 255, 0.3);
+  --glass-border-primary: rgba(217, 208, 194, 0.5);
+  --glass-border-secondary: rgba(255, 255, 255, 0.2);
+
+  /* Text colors */
+  --text-primary: #072f57;
+  --text-secondary: rgba(7, 47, 87, 0.6);
+  --icon-color: rgba(7, 47, 87, 0.8);
+
+  /* Accent colors */
+  --accent-navy: #072f57;
+  --accent-blue: #072f57;
+  --accent-cyan: #0a3d6f;
+  --accent-green: #43aa32;
+  --accent-orange: #d9d0c2;
+  --accent-red: #cc4d4d;
+
+  /* Button colors */
+  --button-background: #072f57;
+  --button-text: #ffffff;
+
+  /* Shadows */
+  --shadow-color: rgba(0, 0, 0, 0.05);
+  --shadow-color-strong: rgba(0, 0, 0, 0.02);
+
+  /* Layout colors */
+  --sidebar-bg: rgba(255, 255, 255, 0.8);
+  --card-bg: rgba(255, 255, 255, 0.95);
+  --glass-border: rgba(217, 208, 194, 0.5);
+}
+
+/* Chase Sapphire Reserve Theme - Dark Mode */
+.dark {
+  /* Background gradients */
+  --background-top: #0d0d0d;
+  --background-middle: #1f1f1f;
+  --background-bottom: #141414;
+
+  /* Glass card colors */
+  --glass-overlay-primary: rgba(255, 255, 255, 0.12);
+  --glass-overlay-secondary: rgba(255, 255, 255, 0.04);
+  --glass-border-primary: rgba(255, 255, 255, 0.25);
+  --glass-border-secondary: rgba(255, 255, 255, 0.08);
+
+  /* Text colors */
+  --text-primary: #ffffff;
+  --text-secondary: rgba(255, 255, 255, 0.65);
+  --icon-color: rgba(255, 255, 255, 0.85);
+
+  /* Accent colors */
+  --accent-navy: #5c8db8;
+  --accent-blue: #5c8db8;
+  --accent-cyan: #73a6d1;
+  --accent-green: #43aa32;
+  --accent-orange: #d9d0c2;
+  --accent-red: #f26666;
+
+  /* Button colors */
+  --button-background: #5c8db8;
+  --button-text: #ffffff;
+
+  /* Shadows */
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  --shadow-color-strong: rgba(0, 0, 0, 0.05);
+
+  /* Layout colors */
+  --sidebar-bg: rgba(20, 20, 20, 0.95);
+  --card-bg: rgba(31, 31, 31, 0.95);
+  --glass-border: rgba(255, 255, 255, 0.1);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-background-top: var(--background-top);
+  --color-background-middle: var(--background-middle);
+  --color-background-bottom: var(--background-bottom);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-accent-navy: var(--accent-navy);
+  --color-accent-blue: var(--accent-blue);
+  --color-accent-cyan: var(--accent-cyan);
+  --color-accent-green: var(--accent-green);
+  --color-accent-orange: var(--accent-orange);
+  --color-accent-red: var(--accent-red);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Base body styling */
+body {
+  background: linear-gradient(135deg, var(--background-top) 0%, var(--background-middle) 50%, var(--background-bottom) 100%);
+  color: var(--text-primary);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  min-height: 100vh;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Glass card effect */
+.glass-card {
+  background: linear-gradient(135deg, var(--glass-overlay-primary) 0%, var(--glass-overlay-secondary) 100%);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border-primary);
+  border-radius: 24px;
+  box-shadow:
+    0 10px 20px var(--shadow-color),
+    0 20px 40px var(--shadow-color-strong);
+}
+
+.glass-card-compact {
+  background: linear-gradient(135deg, var(--glass-overlay-primary) 0%, var(--glass-overlay-secondary) 100%);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border-primary);
+  border-radius: 16px;
+  box-shadow:
+    0 8px 16px var(--shadow-color),
+    0 16px 32px var(--shadow-color-strong);
+}
+
+/* Gradient button */
+.btn-gradient {
+  background: linear-gradient(90deg, var(--accent-blue) 0%, var(--accent-cyan) 100%);
+  color: var(--button-text);
+  border-radius: 9999px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 15px rgba(7, 47, 87, 0.3);
+}
+
+.btn-gradient:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(7, 47, 87, 0.4);
+}
+
+.dark .btn-gradient {
+  box-shadow: 0 4px 15px rgba(92, 141, 184, 0.3);
+}
+
+.dark .btn-gradient:hover {
+  box-shadow: 0 6px 20px rgba(92, 141, 184, 0.4);
+}
+
+/* Gradient text */
+.text-gradient {
+  background: linear-gradient(90deg, var(--accent-blue) 0%, var(--accent-cyan) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Glow effect */
+.glow {
+  filter: drop-shadow(0 0 20px var(--accent-blue));
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--glass-border-primary);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
+}
+
+/* Selection styling */
+::selection {
+  background: var(--accent-blue);
+  color: white;
+}
+
+/* Focus styling */
+*:focus-visible {
+  outline: 2px solid var(--accent-blue);
+  outline-offset: 2px;
 }
