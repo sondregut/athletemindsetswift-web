@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import {
   collection,
   getDocs,
@@ -32,7 +32,10 @@ export function useHistory() {
   const [items, setItems] = useState<HistoryItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [lastLoadTime, setLastLoadTime] = useState<Date | null>(null);
+
+  // Use ref for cache to avoid dependency issues
+  const lastLoadTimeRef = useRef<Date | null>(null);
+  const hasLoadedRef = useRef(false);
 
   // Filters
   const [timeFilter, setTimeFilter] = useState<TimeFilter>("all");
@@ -209,14 +212,15 @@ export function useHistory() {
         return;
       }
 
-      // Check cache validity
+      // Check cache validity using refs to avoid infinite loops
       if (
         !forceRefresh &&
-        lastLoadTime &&
-        Date.now() - lastLoadTime.getTime() < CACHE_VALIDITY_MS &&
-        items.length > 0
+        hasLoadedRef.current &&
+        lastLoadTimeRef.current &&
+        Date.now() - lastLoadTimeRef.current.getTime() < CACHE_VALIDITY_MS
       ) {
         console.log("[useHistory] Using cached history");
+        setIsLoading(false);
         return;
       }
 
@@ -257,7 +261,8 @@ export function useHistory() {
         allItems.sort((a, b) => b.date.getTime() - a.date.getTime());
 
         setItems(allItems);
-        setLastLoadTime(new Date());
+        lastLoadTimeRef.current = new Date();
+        hasLoadedRef.current = true;
 
         console.log(
           `[useHistory] Loaded ${allItems.length} history items (${checkIns.length} check-ins, ${trainingSessions.length} training, ${voiceSessions.length} voice)`
@@ -269,7 +274,7 @@ export function useHistory() {
         setIsLoading(false);
       }
     },
-    [user, lastLoadTime, items.length, loadCheckIns, loadTrainingSessions, loadVoiceSessions]
+    [user, loadCheckIns, loadTrainingSessions, loadVoiceSessions]
   );
 
   // Filtered items
@@ -360,7 +365,8 @@ export function useHistory() {
 
   // Invalidate cache
   const invalidateCache = useCallback(() => {
-    setLastLoadTime(null);
+    lastLoadTimeRef.current = null;
+    hasLoadedRef.current = false;
   }, []);
 
   // Load on mount
