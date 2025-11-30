@@ -43,16 +43,17 @@ export interface SubscriptionState {
 export const PRICING = {
   monthly: {
     priceId: process.env.NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID!,
-    amount: 17.69,
+    amount: 12.99,
     interval: 'month' as const,
     label: 'Monthly',
   },
   yearly: {
     priceId: process.env.NEXT_PUBLIC_STRIPE_YEARLY_PRICE_ID!,
-    amount: 120,
+    amount: 69.99,
+    monthlyEquivalent: 5.83,
     interval: 'year' as const,
     label: 'Yearly',
-    savings: '44%',
+    savings: '55%',
   },
 } as const;
 

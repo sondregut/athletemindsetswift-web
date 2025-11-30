@@ -83,6 +83,17 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error('[Stripe Checkout] Error:', error);
+
+    // Check for Firebase Admin auth errors
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    if (errorMessage.includes('invalid_grant') || errorMessage.includes('reauth')) {
+      console.error('[Stripe Checkout] Firebase Admin credentials need refresh');
+      return NextResponse.json(
+        { error: 'Server authentication error. Please try again later.' },
+        { status: 503 }
+      );
+    }
+
     return NextResponse.json(
       { error: 'Failed to create checkout session' },
       { status: 500 }

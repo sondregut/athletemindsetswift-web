@@ -567,62 +567,101 @@ export default function ProfilePage() {
           {/* No Subscription - Upgrade CTA */}
           {!hasAccess && (
             <div className="space-y-4">
-              <div
-                className="p-4 rounded-xl text-center"
-                style={{ backgroundColor: "var(--glass-overlay-secondary)" }}
-              >
-                <Crown
-                  className="w-12 h-12 mx-auto mb-3"
-                  style={{ color: "var(--accent-gold)" }}
-                />
+              {/* Header */}
+              <div className="text-center mb-2">
+                <div
+                  className="w-16 h-16 mx-auto mb-3 rounded-2xl flex items-center justify-center"
+                  style={{ background: "linear-gradient(135deg, var(--accent-gold), var(--accent-cyan))" }}
+                >
+                  <Crown className="w-8 h-8 text-white" />
+                </div>
                 <h3
-                  className="font-semibold mb-1"
+                  className="text-xl font-bold mb-1"
                   style={{ color: "var(--text-primary)" }}
                 >
-                  Unlock Premium
+                  Athlete Mindset Pro
                 </h3>
                 <p
-                  className="text-sm mb-4"
+                  className="text-sm"
                   style={{ color: "var(--text-secondary)" }}
                 >
-                  Get unlimited access to all features
+                  Unlock your full mental performance potential
                 </p>
+              </div>
 
-                {/* Pricing Options */}
-                <div className="grid grid-cols-2 gap-3 mb-4">
-                  <button
-                    onClick={() => createCheckout("monthly")}
-                    disabled={actionLoading}
-                    className="p-3 rounded-xl border-2 border-transparent hover:border-[var(--accent-blue)] transition-all"
-                    style={{ backgroundColor: "var(--glass-overlay-primary)" }}
-                  >
-                    <p className="font-bold" style={{ color: "var(--text-primary)" }}>
-                      ${pricing.monthly.amount}
-                    </p>
-                    <p className="text-xs" style={{ color: "var(--text-secondary)" }}>
-                      per month
-                    </p>
-                  </button>
-                  <button
-                    onClick={() => createCheckout("yearly")}
-                    disabled={actionLoading}
-                    className="p-3 rounded-xl border-2 border-[var(--accent-gold)] relative"
-                    style={{ backgroundColor: "var(--glass-overlay-primary)" }}
-                  >
-                    <span className="absolute -top-2 left-1/2 -translate-x-1/2 text-xs px-2 py-0.5 rounded-full bg-[var(--accent-gold)] text-black font-medium">
-                      Save {pricing.yearly.savings}
+              {/* Features List */}
+              <div
+                className="p-4 rounded-xl space-y-2"
+                style={{ backgroundColor: "var(--glass-overlay-secondary)" }}
+              >
+                {[
+                  "Unlimited AI voice coaching sessions",
+                  "Personalized mental training plans",
+                  "Advanced visualization exercises",
+                  "Goal tracking & progress analytics",
+                  "Daily check-ins & journaling",
+                ].map((feature, i) => (
+                  <div key={i} className="flex items-center gap-2">
+                    <Check className="w-4 h-4 flex-shrink-0" style={{ color: "var(--accent-cyan)" }} />
+                    <span className="text-sm" style={{ color: "var(--text-primary)" }}>
+                      {feature}
                     </span>
-                    <p className="font-bold" style={{ color: "var(--text-primary)" }}>
-                      ${pricing.yearly.amount}
-                    </p>
-                    <p className="text-xs" style={{ color: "var(--text-secondary)" }}>
-                      per year
-                    </p>
-                  </button>
-                </div>
+                  </div>
+                ))}
+              </div>
 
-                <p className="text-xs" style={{ color: "var(--text-secondary)" }}>
-                  3-day free trial included
+              {/* Pricing Options */}
+              <div className="grid grid-cols-2 gap-3">
+                {/* Monthly */}
+                <button
+                  onClick={() => createCheckout("monthly")}
+                  disabled={actionLoading}
+                  className="p-4 rounded-xl border-2 border-transparent hover:border-[var(--accent-blue)] transition-all text-left relative"
+                  style={{ backgroundColor: "var(--glass-overlay-secondary)" }}
+                >
+                  <p className="text-xs font-medium mb-2" style={{ color: "var(--text-secondary)" }}>
+                    Monthly
+                  </p>
+                  <p className="text-2xl font-bold" style={{ color: "var(--text-primary)" }}>
+                    ${pricing.monthly.amount}
+                  </p>
+                  <p className="text-xs" style={{ color: "var(--text-secondary)" }}>
+                    per month
+                  </p>
+                </button>
+
+                {/* Yearly - Best Value */}
+                <button
+                  onClick={() => createCheckout("yearly")}
+                  disabled={actionLoading}
+                  className="p-4 rounded-xl border-2 border-[var(--accent-gold)] transition-all text-left relative overflow-hidden"
+                  style={{ backgroundColor: "var(--glass-overlay-secondary)" }}
+                >
+                  <span
+                    className="absolute top-0 right-0 text-[10px] px-2 py-1 font-bold text-black"
+                    style={{ backgroundColor: "var(--accent-gold)" }}
+                  >
+                    BEST VALUE
+                  </span>
+                  <p className="text-xs font-medium mb-2" style={{ color: "var(--text-secondary)" }}>
+                    Yearly
+                  </p>
+                  <p className="text-2xl font-bold" style={{ color: "var(--text-primary)" }}>
+                    ${pricing.yearly.amount}
+                  </p>
+                  <p className="text-xs" style={{ color: "var(--text-secondary)" }}>
+                    ${(pricing.yearly.amount / 12).toFixed(2)}/mo · Save {pricing.yearly.savings}
+                  </p>
+                </button>
+              </div>
+
+              {/* Trial Info */}
+              <div
+                className="p-3 rounded-xl flex items-center justify-center gap-2 bg-[var(--accent-cyan)]/10"
+              >
+                <Sparkles className="w-4 h-4" style={{ color: "var(--accent-cyan)" }} />
+                <p className="text-sm font-medium" style={{ color: "var(--accent-cyan)" }}>
+                  Start with 3 days free
                 </p>
               </div>
             </div>

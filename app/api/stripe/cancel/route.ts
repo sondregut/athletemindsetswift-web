@@ -67,6 +67,15 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error('[Stripe Cancel] Error:', error);
+
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    if (errorMessage.includes('invalid_grant') || errorMessage.includes('reauth')) {
+      return NextResponse.json(
+        { error: 'Server authentication error. Please try again later.' },
+        { status: 503 }
+      );
+    }
+
     return NextResponse.json(
       { error: 'Failed to cancel subscription' },
       { status: 500 }
