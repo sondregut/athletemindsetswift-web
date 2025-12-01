@@ -7,14 +7,13 @@ import { useAuthContext } from "@/components/auth/auth-context";
 
 export default function LoginPage() {
   const router = useRouter();
-  const { signIn, profile } = useAuthContext();
+  const { signIn, signInWithGoogle } = useAuthContext();
   const [error, setError] = useState<string | null>(null);
 
   const handleLogin = async (data: { email: string; password: string }) => {
     setError(null);
     try {
       await signIn(data.email, data.password);
-      // Redirect to onboarding if not completed, otherwise dashboard
       router.push("/dashboard");
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : "Login failed";
@@ -33,5 +32,25 @@ export default function LoginPage() {
     }
   };
 
-  return <AuthForm mode="login" onSubmit={handleLogin} error={error} />;
+  const handleGoogleSignIn = async () => {
+    setError(null);
+    try {
+      const result = await signInWithGoogle();
+      // Redirect to onboarding if new user, otherwise dashboard
+      if (result.isNewUser) {
+        router.push("/onboarding");
+      } else {
+        router.push("/dashboard");
+      }
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : "Google sign in failed";
+      if (errorMessage.includes("popup-closed-by-user")) {
+        // User closed the popup, don't show error
+        return;
+      }
+      setError("Failed to sign in with Google. Please try again.");
+    }
+  };
+
+  return <AuthForm mode="login" onSubmit={handleLogin} onGoogleSignIn={handleGoogleSignIn} error={error} />;
 }

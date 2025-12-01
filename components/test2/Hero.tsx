@@ -1,6 +1,7 @@
 "use client";
 
 import React from 'react';
+import Link from 'next/link';
 import { ChevronDown } from 'lucide-react';
 import PhoneMockup from './mockups/PhoneMockup';
 import AppHomeMock from './mockups/AppHomeMock';
@@ -42,9 +43,12 @@ const Hero = () => {
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-              <button className="bg-gradient-to-r from-[#051d38] to-[#072f57] text-white font-semibold px-8 py-4 rounded-lg hover:shadow-lg transition-all text-base flex items-center justify-center gap-2">
+              <Link
+                href="/signup"
+                className="bg-gradient-to-r from-[#051d38] to-[#072f57] text-white font-semibold px-8 py-4 rounded-lg hover:shadow-lg transition-all text-base flex items-center justify-center gap-2"
+              >
                 Start mental training — it's free
-              </button>
+              </Link>
               <button
                 onClick={() => scrollToSection('how-it-works')}
                 className="border-2 border-[#072f57] text-[#072f57] font-semibold px-8 py-4 rounded-lg hover:bg-[#e8eef4] transition-all text-base"

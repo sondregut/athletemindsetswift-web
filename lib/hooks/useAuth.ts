@@ -9,6 +9,8 @@ import {
   signOut as firebaseSignOut,
   sendPasswordResetEmail,
   updateProfile,
+  signInWithPopup,
+  GoogleAuthProvider,
 } from "firebase/auth";
 import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
 import { auth, db } from "@/lib/firebase/client";
@@ -208,6 +210,57 @@ export function useAuth() {
     }
   }, []);
 
+  // Sign in with Google
+  const signInWithGoogle = useCallback(async () => {
+    if (!auth || !db) throw new Error("Firebase not initialized");
+
+    setState((prev) => ({ ...prev, loading: true, error: null }));
+
+    try {
+      const provider = new GoogleAuthProvider();
+      const result = await signInWithPopup(auth, provider);
+
+      // Check if user profile exists
+      let profile = await fetchProfile(result.user.uid);
+
+      // If no profile, create one (new user)
+      if (!profile) {
+        const userProfile: UserProfile = {
+          displayName: result.user.displayName || "",
+          onboardingCompleted: false,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        };
+
+        await setDoc(doc(db, "swift_users", result.user.uid), {
+          ...userProfile,
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp(),
+        });
+
+        profile = userProfile;
+      }
+
+      setState({
+        user: result.user,
+        profile,
+        loading: false,
+        error: null,
+      });
+
+      return { user: result.user, isNewUser: !profile?.onboardingCompleted };
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error.message : "Google sign in failed";
+      setState((prev) => ({
+        ...prev,
+        loading: false,
+        error: errorMessage,
+      }));
+      throw error;
+    }
+  }, [fetchProfile]);
+
   // Update user profile
   const updateUserProfile = useCallback(
     async (updates: Partial<UserProfile>) => {
@@ -261,6 +314,7 @@ export function useAuth() {
     signUp,
     signOut,
     resetPassword,
+    signInWithGoogle,
     updateUserProfile,
     getIdToken,
     refreshProfile: () =>

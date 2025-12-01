@@ -117,12 +117,6 @@ const TrainingModes = () => {
           ))}
         </div>
 
-        {/* VS Divider (visible on large screens) */}
-        <div className="hidden lg:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none">
-          <div className="w-12 h-12 bg-[#e8eef4] rounded-full flex items-center justify-center border-4 border-white shadow-lg">
-            <span className="text-[#072f57] font-bold text-sm">VS</span>
-          </div>
-        </div>
       </div>
     </section>
   );

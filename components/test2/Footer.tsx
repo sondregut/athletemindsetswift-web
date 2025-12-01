@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Apple, FileText, HelpCircle, Image as ImageIcon } from 'lucide-react';
+import { Apple, HelpCircle } from 'lucide-react';
 
 const Footer = () => {
   return (
@@ -20,21 +20,16 @@ const Footer = () => {
           </p>
 
           {/* CTA Button */}
-          <button className="bg-white text-[#072f57] font-semibold px-8 py-4 rounded-xl hover:bg-white/90 transition-all mb-8">
+          <Link
+            href="/signup"
+            className="inline-block bg-white text-[#072f57] font-semibold px-8 py-4 rounded-xl hover:bg-white/90 transition-all mb-8"
+          >
             Get Started
-          </button>
+          </Link>
 
           {/* Secondary Actions */}
           <div className="flex flex-wrap items-center justify-center gap-6">
-            <Link href="#" className="flex items-center gap-2 text-white/70 hover:text-white transition-colors text-sm">
-              <ImageIcon className="w-4 h-4" />
-              View Screenshots
-            </Link>
-            <Link href="#" className="flex items-center gap-2 text-white/70 hover:text-white transition-colors text-sm">
-              <FileText className="w-4 h-4" />
-              Read Documentation
-            </Link>
-            <Link href="#" className="flex items-center gap-2 text-white/70 hover:text-white transition-colors text-sm">
+            <Link href="mailto:support@athletemindset.app" className="flex items-center gap-2 text-white/70 hover:text-white transition-colors text-sm">
               <HelpCircle className="w-4 h-4" />
               Contact Support
             </Link>
@@ -111,12 +106,6 @@ const Footer = () => {
                 </Link>
                 <Link href="/terms" className="text-white/50 hover:text-white transition-colors text-sm">
                   Terms of Service
-                </Link>
-                <Link href="/cookies" className="text-white/50 hover:text-white transition-colors text-sm">
-                  Cookie Policy
-                </Link>
-                <Link href="/gdpr" className="text-white/50 hover:text-white transition-colors text-sm">
-                  GDPR
                 </Link>
               </div>
             </div>
