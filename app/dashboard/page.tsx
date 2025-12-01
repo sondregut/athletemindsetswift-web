@@ -21,12 +21,16 @@ export default function DashboardPage() {
   const { stats: goalStats } = useGoals();
   const router = useRouter();
 
-  // Redirect to login if not authenticated
+  // Redirect to login if not authenticated, or onboarding if not completed
   useEffect(() => {
-    if (!loading && !isAuthenticated) {
-      router.push("/login");
+    if (!loading) {
+      if (!isAuthenticated) {
+        router.push("/login");
+      } else if (profile && !profile.onboardingCompleted) {
+        router.push("/onboarding");
+      }
     }
-  }, [loading, isAuthenticated, router]);
+  }, [loading, isAuthenticated, profile, router]);
 
   // Get greeting based on time of day
   const getGreeting = () => {

@@ -82,7 +82,7 @@ export default function OnboardingPage() {
           experienceLevel: experienceLevel as ExperienceLevel,
           onboardingCompleted: true,
         });
-        router.push("/");
+        router.push("/dashboard");
       } catch (error) {
         console.error("Failed to save profile:", error);
       } finally {

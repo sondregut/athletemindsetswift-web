@@ -7,14 +7,15 @@ import { useAuthContext } from "@/components/auth/auth-context";
 
 export default function LoginPage() {
   const router = useRouter();
-  const { signIn } = useAuthContext();
+  const { signIn, profile } = useAuthContext();
   const [error, setError] = useState<string | null>(null);
 
   const handleLogin = async (data: { email: string; password: string }) => {
     setError(null);
     try {
       await signIn(data.email, data.password);
-      router.push("/");
+      // Redirect to onboarding if not completed, otherwise dashboard
+      router.push("/dashboard");
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : "Login failed";
       // Parse Firebase error messages
