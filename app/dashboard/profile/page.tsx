@@ -105,6 +105,9 @@ export default function ProfilePage() {
     experienceLevel: "",
   });
 
+  // Subscription plan selection
+  const [selectedPlan, setSelectedPlan] = useState<"monthly" | "yearly">("yearly");
+
   // Hydration fix for theme
   useEffect(() => {
     setMounted(true);
@@ -611,14 +614,25 @@ export default function ProfilePage() {
               </div>
 
               {/* Pricing Options */}
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-3 mb-4">
                 {/* Monthly */}
                 <button
-                  onClick={() => createCheckout("monthly")}
-                  disabled={actionLoading}
-                  className="p-4 rounded-xl border-2 border-transparent hover:border-[var(--accent-blue)] transition-all text-left relative"
+                  onClick={() => setSelectedPlan("monthly")}
+                  className={`p-4 rounded-xl border-2 transition-all text-left relative ${
+                    selectedPlan === "monthly"
+                      ? "border-[var(--accent-blue)]"
+                      : "border-transparent hover:border-[var(--accent-blue)]/50"
+                  }`}
                   style={{ backgroundColor: "var(--glass-overlay-secondary)" }}
                 >
+                  {selectedPlan === "monthly" && (
+                    <div
+                      className="absolute top-3 right-3 w-5 h-5 rounded-full flex items-center justify-center"
+                      style={{ backgroundColor: "var(--accent-blue)" }}
+                    >
+                      <Check className="w-3 h-3 text-white" />
+                    </div>
+                  )}
                   <p className="text-xs font-medium mb-2" style={{ color: "var(--text-secondary)" }}>
                     Monthly
                   </p>
@@ -632,9 +646,12 @@ export default function ProfilePage() {
 
                 {/* Yearly - Best Value */}
                 <button
-                  onClick={() => createCheckout("yearly")}
-                  disabled={actionLoading}
-                  className="p-4 rounded-xl border-2 border-[var(--accent-gold)] transition-all text-left relative overflow-hidden"
+                  onClick={() => setSelectedPlan("yearly")}
+                  className={`p-4 rounded-xl border-2 transition-all text-left relative overflow-hidden ${
+                    selectedPlan === "yearly"
+                      ? "border-[var(--accent-gold)]"
+                      : "border-transparent hover:border-[var(--accent-gold)]/50"
+                  }`}
                   style={{ backgroundColor: "var(--glass-overlay-secondary)" }}
                 >
                   <span
@@ -643,6 +660,14 @@ export default function ProfilePage() {
                   >
                     BEST VALUE
                   </span>
+                  {selectedPlan === "yearly" && (
+                    <div
+                      className="absolute top-8 right-3 w-5 h-5 rounded-full flex items-center justify-center"
+                      style={{ backgroundColor: "var(--accent-gold)" }}
+                    >
+                      <Check className="w-3 h-3 text-black" />
+                    </div>
+                  )}
                   <p className="text-xs font-medium mb-2" style={{ color: "var(--text-secondary)" }}>
                     Yearly
                   </p>
@@ -655,15 +680,28 @@ export default function ProfilePage() {
                 </button>
               </div>
 
-              {/* Trial Info */}
-              <div
-                className="p-3 rounded-xl flex items-center justify-center gap-2 bg-[var(--accent-cyan)]/10"
+              {/* Subscribe Button */}
+              <Button
+                variant="gradient"
+                className="w-full py-3 text-base mb-3"
+                onClick={() => createCheckout(selectedPlan)}
+                disabled={actionLoading}
               >
-                <Sparkles className="w-4 h-4" style={{ color: "var(--accent-cyan)" }} />
-                <p className="text-sm font-medium" style={{ color: "var(--accent-cyan)" }}>
-                  Start with 3 days free
-                </p>
-              </div>
+                {actionLoading ? (
+                  <Loader2 className="w-5 h-5 animate-spin mr-2" />
+                ) : (
+                  <Sparkles className="w-5 h-5 mr-2" />
+                )}
+                Start 3-Day Free Trial
+              </Button>
+
+              {/* Trial Info */}
+              <p
+                className="text-center text-xs"
+                style={{ color: "var(--text-secondary)" }}
+              >
+                Cancel anytime. No commitment required.
+              </p>
             </div>
           )}
         </GlassCard>
