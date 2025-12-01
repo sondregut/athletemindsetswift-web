@@ -15,11 +15,11 @@ const Hero = () => {
   };
 
   return (
-    <section className="relative pt-24 pb-12 overflow-hidden font-sans">
+    <section className="relative min-h-screen flex flex-col overflow-hidden font-sans">
       {/* Background Gradient */}
       <div className="absolute inset-0 bg-gradient-to-b from-[#f5f0eb] via-white to-white" />
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex-1 flex flex-col justify-center pt-20">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-8 items-center">
           {/* Left Column - Content */}
           <div className="text-center lg:text-left animate-fade-in">
@@ -67,7 +67,7 @@ const Hero = () => {
         </div>
 
         {/* Scroll Indicator */}
-        <div className="flex justify-center mt-8">
+        <div className="flex justify-center py-8">
           <button
             onClick={() => scrollToSection('science')}
             className="animate-bounce p-2 rounded-full bg-white/80 shadow-md hover:shadow-lg transition-all"

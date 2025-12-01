@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
+import Link from 'next/link';
 import { Check, Zap, Star, Crown } from 'lucide-react';
 
 const Pricing = () => {
@@ -29,7 +30,7 @@ const Pricing = () => {
       icon: Star,
       price: isYearly ? '$5.83' : '$12.99',
       period: '/mo',
-      yearlyNote: isYearly ? 'billed $69.99 yearly' : '',
+      yearlyNote: isYearly ? 'billed $69.99 annually' : '',
       description: 'Unlock your full mental performance potential',
       features: [
         'Unlimited AI voice coaching sessions',
@@ -185,18 +186,25 @@ const Pricing = () => {
                 ))}
               </ul>
 
-              <button
-                className={`w-full py-4 text-base font-semibold rounded-xl transition-all ${
-                  tier.popular
-                    ? 'bg-white text-[#072f57] hover:bg-white/90'
-                    : tier.comingSoon
-                    ? 'bg-[#e5e5e5] text-[#6b6b6b] cursor-not-allowed'
-                    : 'bg-[#072f57] text-white hover:bg-[#0a4a8a]'
-                }`}
-                disabled={tier.comingSoon}
-              >
-                {tier.cta}
-              </button>
+              {tier.comingSoon ? (
+                <button
+                  className="w-full py-4 text-base font-semibold rounded-xl transition-all bg-[#e5e5e5] text-[#6b6b6b] cursor-not-allowed"
+                  disabled
+                >
+                  {tier.cta}
+                </button>
+              ) : (
+                <Link
+                  href="/signup"
+                  className={`w-full py-4 text-base font-semibold rounded-xl transition-all block text-center ${
+                    tier.popular
+                      ? 'bg-white text-[#072f57] hover:bg-white/90'
+                      : 'bg-[#072f57] text-white hover:bg-[#0a4a8a]'
+                  }`}
+                >
+                  {tier.cta}
+                </Link>
+              )}
             </div>
           ))}
         </div>

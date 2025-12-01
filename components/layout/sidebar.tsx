@@ -26,7 +26,7 @@ interface NavItem {
 }
 
 const mainNavItems: NavItem[] = [
-  { href: "/", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/dashboard/coach", label: "Voice Coach", icon: Mic },
   { href: "/dashboard/training", label: "Training Library", icon: BookOpen },
   { href: "/dashboard/goals", label: "Goals", icon: Target },
@@ -111,7 +111,7 @@ export function Sidebar() {
             {mainNavItems.map((item) => {
               const isActive =
                 pathname === item.href ||
-                (item.href !== "/" && pathname.startsWith(item.href));
+                (item.href !== "/dashboard" && pathname.startsWith(item.href));
               const Icon = item.icon;
 
               return (
@@ -229,7 +229,7 @@ export function Sidebar() {
           {mainNavItems.slice(0, 5).map((item) => {
             const isActive =
               pathname === item.href ||
-              (item.href !== "/" && pathname.startsWith(item.href));
+              (item.href !== "/dashboard" && pathname.startsWith(item.href));
             const Icon = item.icon;
 
             return (
