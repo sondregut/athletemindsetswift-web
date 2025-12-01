@@ -27,9 +27,9 @@ const Pricing = () => {
     {
       name: 'Pro',
       icon: Star,
-      price: isYearly ? '$69.99' : '$12.99',
-      period: isYearly ? '/year' : '/mo',
-      yearlyNote: isYearly ? '$5.83/mo · Save 55%' : '',
+      price: isYearly ? '$5.83' : '$12.99',
+      period: '/mo',
+      yearlyNote: isYearly ? 'billed $69.99 yearly' : '',
       description: 'Unlock your full mental performance potential',
       features: [
         'Unlimited AI voice coaching sessions',
