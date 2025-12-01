@@ -66,22 +66,23 @@ const Navbar = () => {
                 {link.label}
               </button>
             ))}
+          </div>
+
+          {/* Desktop CTA - Login & Sign Up */}
+          <div className="hidden md:flex items-center gap-3">
             <Link
               href="/login"
-              className="text-[#404040] font-medium hover:text-[#072f57] transition-colors"
+              className="text-[#072f57] font-semibold px-4 py-2 rounded-lg hover:bg-[#e8eef4] transition-all"
             >
               Log In
             </Link>
             <Link
               href="/signup"
-              className="text-[#072f57] font-semibold hover:text-[#051d38] transition-colors"
+              className="bg-gradient-to-r from-[#051d38] to-[#072f57] text-white font-semibold px-5 py-2 rounded-lg hover:shadow-lg transition-all"
             >
-              Sign Up
+              Sign Up Free
             </Link>
-          </div>
-
-          {/* Desktop CTA */}
-          <div className="hidden md:flex items-center">
+            {/* Download App - Hidden until app is available
             <Link
               href={APP_STORE_URL}
               className="bg-gradient-to-r from-[#051d38] to-[#072f57] text-white font-semibold px-5 py-2 rounded-lg hover:shadow-lg transition-all flex items-center gap-2"
@@ -89,6 +90,7 @@ const Navbar = () => {
               <Download className="w-4 h-4" />
               Download App
             </Link>
+            */}
           </div>
 
           {/* Mobile Menu Button */}
@@ -116,21 +118,22 @@ const Navbar = () => {
                 {link.label}
               </button>
             ))}
-            <Link
-              href="/login"
-              className="block w-full text-left py-2 text-[#404040] font-medium hover:text-[#072f57] transition-colors"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              Log In
-            </Link>
-            <Link
-              href="/signup"
-              className="block w-full text-left py-2 text-[#072f57] font-semibold hover:text-[#051d38] transition-colors"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              Sign Up
-            </Link>
             <div className="pt-3 border-t border-[#e5e5e5] space-y-3">
+              <Link
+                href="/login"
+                className="block w-full text-center py-3 text-[#072f57] font-semibold border-2 border-[#072f57] rounded-lg hover:bg-[#e8eef4] transition-colors"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Log In
+              </Link>
+              <Link
+                href="/signup"
+                className="block w-full text-center py-3 bg-gradient-to-r from-[#051d38] to-[#072f57] text-white font-semibold rounded-lg"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Sign Up Free
+              </Link>
+              {/* Download App - Hidden until app is available
               <Link
                 href={APP_STORE_URL}
                 className="w-full bg-gradient-to-r from-[#051d38] to-[#072f57] text-white font-semibold py-3 rounded-lg flex items-center justify-center gap-2"
@@ -139,6 +142,7 @@ const Navbar = () => {
                 <Download className="w-4 h-4" />
                 Download App
               </Link>
+              */}
             </div>
           </div>
         </div>

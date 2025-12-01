@@ -1,7 +1,7 @@
 "use client";
 
 import React from 'react';
-import { Apple } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 import PhoneMockup from './mockups/PhoneMockup';
 import AppHomeMock from './mockups/AppHomeMock';
 
@@ -41,7 +41,7 @@ const Hero = () => {
             </p>
 
             {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-8">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
               <button className="bg-gradient-to-r from-[#051d38] to-[#072f57] text-white font-semibold px-8 py-4 rounded-lg hover:shadow-lg transition-all text-base flex items-center justify-center gap-2">
                 Start mental training — it's free
               </button>
@@ -51,12 +51,6 @@ const Hero = () => {
               >
                 See how it works
               </button>
-            </div>
-
-            {/* Trust Signal */}
-            <div className="flex items-center justify-center lg:justify-start gap-2 text-sm text-[#6b6b6b]">
-              <span className="text-lg">⚡🎯</span>
-              <span>Trusted by 10,000+ athletes worldwide</span>
             </div>
           </div>
 
@@ -68,6 +62,16 @@ const Hero = () => {
           </div>
         </div>
 
+        {/* Scroll Indicator */}
+        <div className="flex justify-center mt-8">
+          <button
+            onClick={() => scrollToSection('science')}
+            className="animate-bounce p-2 rounded-full bg-white/80 shadow-md hover:shadow-lg transition-all"
+            aria-label="Scroll down"
+          >
+            <ChevronDown className="w-6 h-6 text-[#072f57]" />
+          </button>
+        </div>
       </div>
     </section>
   );
