@@ -193,3 +193,259 @@ body {
   outline: 2px solid var(--accent-blue);
   outline-offset: 2px;
 }
+
+/* ===== VAULT APP LANDING PAGE STYLES ===== */
+
+/* Landing page variables - Based on Vault App design */
+.landing-page {
+  /* Primary colors */
+  --vault-primary: #072f57;
+  --vault-primary-light: #0a4a8a;
+  --vault-primary-dark: #051d38;
+  --vault-primary-muted: #e8eef4;
+
+  /* Background colors */
+  --vault-bg-warm-start: #f5f0eb;
+  --vault-bg-warm-end: #d9d0c7;
+
+  /* Text colors */
+  --vault-text: #072f57;
+  --vault-text-secondary: #404040;
+  --vault-text-muted: #6b6b6b;
+
+  /* Border colors */
+  --vault-border: #e5e5e5;
+  --vault-border-light: #f0f0f0;
+
+  /* Semantic colors */
+  --vault-success: #198754;
+  --vault-warning: #F59E0B;
+  --vault-error: #EF4444;
+
+  font-family: 'Roboto', system-ui, sans-serif;
+}
+
+/* Section headings */
+.landing-page .section-heading {
+  font-size: clamp(1.5rem, 4vw, 3rem);
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 1rem;
+}
+
+.landing-page .section-subheading {
+  font-size: clamp(0.875rem, 2vw, 1.125rem);
+  color: #4B5563;
+  max-width: 48rem;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 3rem;
+}
+
+/* Primary button */
+.landing-page .btn-primary {
+  background-color: #3176FF;
+  color: white;
+  font-weight: 500;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+
+.landing-page .btn-primary:hover {
+  background-color: #1E293B;
+}
+
+/* Outline button */
+.landing-page .btn-outline {
+  border: 2px solid #3176FF;
+  color: #3176FF;
+  font-weight: 500;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  transition: all 0.2s;
+  background: transparent;
+}
+
+.landing-page .btn-outline:hover {
+  background-color: #E6EFFF;
+}
+
+/* Ghost button (for dark backgrounds) */
+.landing-page .btn-ghost {
+  background: transparent;
+  color: white;
+  border: 2px solid white;
+  font-weight: 500;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+
+.landing-page .btn-ghost:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Feature card */
+.landing-page .feature-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s ease;
+}
+
+.landing-page .feature-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Icon box */
+.landing-page .icon-box {
+  width: 3rem;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  background-color: #E6EFFF;
+  color: #3176FF;
+  margin-bottom: 1rem;
+}
+
+/* Nav link with underline effect */
+.landing-page .nav-link {
+  color: #374151;
+  font-weight: 500;
+  transition: color 0.2s;
+  position: relative;
+  padding-bottom: 0.25rem;
+}
+
+.landing-page .nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: #3176FF;
+  transition: width 0.3s;
+}
+
+.landing-page .nav-link:hover::after,
+.landing-page .nav-link.active::after {
+  width: 100%;
+}
+
+.landing-page .nav-link:hover {
+  color: #3176FF;
+}
+
+/* Section padding */
+.landing-page .section-padding {
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+
+@media (min-width: 640px) {
+  .landing-page .section-padding {
+    padding-left: 3rem;
+    padding-right: 3rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .landing-page .section-padding {
+    padding-left: 6rem;
+    padding-right: 6rem;
+  }
+}
+
+/* Container override for landing page */
+.landing-page .container {
+  width: 100%;
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+
+/* Testimonial card hover */
+.landing-page .testimonial-card {
+  transition: all 0.3s ease;
+}
+
+.landing-page .testimonial-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+/* App screenshot styling */
+.landing-page .app-screenshot {
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+/* Step card connector lines */
+.landing-page .step-card {
+  position: relative;
+}
+
+.landing-page .step-card:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 3rem;
+  right: -1.5rem;
+  width: 3rem;
+  height: 2px;
+  background-color: #e5e7eb;
+  z-index: 0;
+}
+
+@media (max-width: 768px) {
+  .landing-page .step-card:not(:last-child)::after {
+    top: auto;
+    right: auto;
+    bottom: -1.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 2px;
+    height: 3rem;
+  }
+}
+
+/* Animation keyframes */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInRight {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.landing-page .animate-fade-in {
+  animation: fadeIn 0.4s ease-out;
+}
+
+.landing-page .animate-fade-in-right {
+  animation: fadeInRight 0.4s ease-out;
+}
