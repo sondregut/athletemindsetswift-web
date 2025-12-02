@@ -21,12 +21,14 @@ export default function DashboardPage() {
   const { stats: goalStats } = useGoals();
   const router = useRouter();
 
-  // Redirect to login if not authenticated, or onboarding if not completed
+  // Redirect to login if not authenticated, or onboarding if explicitly not completed
   useEffect(() => {
     if (!loading) {
       if (!isAuthenticated) {
         router.push("/login");
-      } else if (profile && !profile.onboardingCompleted) {
+      } else if (profile && profile.onboardingCompleted === false) {
+        // Only redirect if onboardingCompleted is explicitly false (new user)
+        // Users with undefined onboardingCompleted (existing users from iOS) can access dashboard
         router.push("/onboarding");
       }
     }

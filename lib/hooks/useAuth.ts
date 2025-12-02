@@ -221,7 +221,12 @@ export function useAuth() {
       const result = await signInWithPopup(auth, provider);
 
       // Check if user profile exists
-      let profile = await fetchProfile(result.user.uid);
+      const existingProfile = await fetchProfile(result.user.uid);
+
+      // Track if this is a truly new user (no profile at all)
+      const isNewUser = !existingProfile;
+
+      let profile = existingProfile;
 
       // If no profile, create one (new user)
       if (!profile) {
@@ -248,7 +253,9 @@ export function useAuth() {
         error: null,
       });
 
-      return { user: result.user, isNewUser: !profile?.onboardingCompleted };
+      // Only treat as new user if they had no profile at all
+      // Existing users (even without onboardingCompleted) go to dashboard
+      return { user: result.user, isNewUser };
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error ? error.message : "Google sign in failed";
