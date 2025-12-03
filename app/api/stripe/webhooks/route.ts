@@ -97,7 +97,8 @@ async function handleCheckoutCompleted(
   adminDb: FirebaseFirestore.Firestore,
   session: Stripe.Checkout.Session
 ) {
-  const userId = session.metadata?.firebaseUserId;
+  // Support both firebaseUserId and supabase_user_id metadata field names
+  const userId = session.metadata?.firebaseUserId || session.metadata?.supabase_user_id;
   if (!userId) {
     console.error('[Stripe Webhook] No userId in checkout session metadata');
     return;
@@ -122,7 +123,8 @@ async function handleSubscriptionUpdate(
   adminDb: FirebaseFirestore.Firestore,
   subscription: SubscriptionData
 ) {
-  const userId = subscription.metadata?.firebaseUserId;
+  // Support both firebaseUserId and supabase_user_id metadata field names
+  const userId = subscription.metadata?.firebaseUserId || subscription.metadata?.supabase_user_id;
   if (!userId) {
     console.error('[Stripe Webhook] No userId in subscription metadata');
     return;
@@ -136,6 +138,7 @@ async function handleSubscriptionUpdate(
 
   console.log(`[Stripe Webhook] Subscription ${subscription.status} for user ${userId}`);
 
+  // Web app billing data (original format)
   const billingData: Record<string, unknown> = {
     stripeCustomerId: customerId,
     stripeSubscriptionId: subscription.id,
@@ -146,24 +149,43 @@ async function handleSubscriptionUpdate(
     updatedAt: new Date().toISOString(),
   };
 
+  // iOS app subscription data (unified format for cross-platform)
+  // This allows iOS app to read Stripe subscription status
+  const subscriptionData: Record<string, unknown> = {
+    status: status,
+    plan: planType,
+    platform: 'stripe',
+    stripeCustomerId: customerId,
+    stripeSubscriptionId: subscription.id,
+    lastVerifiedAt: new Date().toISOString(),
+  };
+
   // Add period dates if available
   if (subscription.current_period_start) {
     billingData.currentPeriodStart = new Date(subscription.current_period_start * 1000).toISOString();
+    subscriptionData.currentPeriodStart = new Date(subscription.current_period_start * 1000);
   }
   if (subscription.current_period_end) {
     billingData.currentPeriodEnd = new Date(subscription.current_period_end * 1000).toISOString();
+    subscriptionData.currentPeriodEnd = new Date(subscription.current_period_end * 1000);
   }
 
   // Add trial dates if in trial
   if (subscription.trial_start) {
     billingData.trialStartDate = new Date(subscription.trial_start * 1000).toISOString();
+    subscriptionData.trialStartDate = new Date(subscription.trial_start * 1000);
   }
   if (subscription.trial_end) {
     billingData.trialEndDate = new Date(subscription.trial_end * 1000).toISOString();
+    subscriptionData.trialEndDate = new Date(subscription.trial_end * 1000);
   }
 
+  // Update both billing (for web) and subscription (for iOS) fields
   await adminDb.collection('swift_users').doc(userId).set(
-    { billing: billingData },
+    {
+      billing: billingData,
+      subscription: subscriptionData
+    },
     { merge: true }
   );
 }
@@ -172,7 +194,8 @@ async function handleSubscriptionDeleted(
   adminDb: FirebaseFirestore.Firestore,
   subscription: SubscriptionData
 ) {
-  const userId = subscription.metadata?.firebaseUserId;
+  // Support both firebaseUserId and supabase_user_id metadata field names
+  const userId = subscription.metadata?.firebaseUserId || subscription.metadata?.supabase_user_id;
   if (!userId) {
     console.error('[Stripe Webhook] No userId in subscription metadata');
     return;
@@ -180,6 +203,7 @@ async function handleSubscriptionDeleted(
 
   console.log(`[Stripe Webhook] Subscription deleted for user ${userId}`);
 
+  // Update both billing (web) and subscription (iOS) fields
   await adminDb.collection('swift_users').doc(userId).set(
     {
       billing: {
@@ -187,6 +211,10 @@ async function handleSubscriptionDeleted(
         stripeSubscriptionId: null,
         cancelAtPeriodEnd: false,
         updatedAt: new Date().toISOString(),
+      },
+      subscription: {
+        status: 'expired',
+        lastVerifiedAt: new Date().toISOString(),
       },
     },
     { merge: true }
@@ -210,12 +238,17 @@ async function handlePaymentSucceeded(
 
   console.log(`[Stripe Webhook] Payment succeeded for user ${userId}`);
 
+  // Update both billing (web) and subscription (iOS) fields
   await adminDb.collection('swift_users').doc(userId).set(
     {
       billing: {
         subscriptionStatus: 'active',
         lastPaymentDate: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
+      },
+      subscription: {
+        status: 'active',
+        lastVerifiedAt: new Date().toISOString(),
       },
     },
     { merge: true }
@@ -239,11 +272,16 @@ async function handlePaymentFailed(
 
   console.log(`[Stripe Webhook] Payment failed for user ${userId}`);
 
+  // Update both billing (web) and subscription (iOS) fields
   await adminDb.collection('swift_users').doc(userId).set(
     {
       billing: {
         subscriptionStatus: 'past_due',
         updatedAt: new Date().toISOString(),
+      },
+      subscription: {
+        status: 'past_due',
+        lastVerifiedAt: new Date().toISOString(),
       },
     },
     { merge: true }
