@@ -25,6 +25,13 @@ import {
   Calendar,
   AlertCircle,
   Sparkles,
+  Mail,
+  Shield,
+  FileText,
+  HelpCircle,
+  Trash2,
+  Info,
+  ExternalLink,
 } from "lucide-react";
 import Link from "next/link";
 import { AppShell } from "@/components/layout/app-shell";
@@ -77,12 +84,18 @@ const EXPERIENCE_LEVELS = [
 
 export default function ProfilePage() {
   const router = useRouter();
-  const { user, profile, isAuthenticated, loading, signOut, updateUserProfile } =
+  const { user, profile, isAuthenticated, loading, signOut, updateUserProfile, deleteAccount } =
     useAuthContext();
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+
+  // Delete account state
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deleteConfirmText, setDeleteConfirmText] = useState("");
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   // Subscription state
   const {
@@ -163,6 +176,25 @@ export default function ProfilePage() {
       experienceLevel: profile?.experienceLevel || "",
     });
     setIsEditing(false);
+  };
+
+  const handleDeleteAccount = async () => {
+    if (deleteConfirmText.toUpperCase() !== "DELETE") return;
+
+    setIsDeleting(true);
+    setDeleteError(null);
+
+    try {
+      await deleteAccount();
+      router.push("/");
+    } catch (error) {
+      console.error("Delete account error:", error);
+      setDeleteError(
+        error instanceof Error ? error.message : "Failed to delete account"
+      );
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
   if (loading) {
@@ -706,8 +738,86 @@ export default function ProfilePage() {
           )}
         </GlassCard>
 
+        {/* Support Section */}
+        <GlassCard className="mb-6">
+          <h2
+            className="text-lg font-semibold mb-4 flex items-center gap-2"
+            style={{ color: "var(--text-primary)" }}
+          >
+            <HelpCircle className="w-5 h-5" style={{ color: "var(--accent-cyan)" }} />
+            Support
+          </h2>
+
+          <div className="space-y-2">
+            <a
+              href="mailto:support@athletemindset.app"
+              className="flex items-center justify-between p-3 rounded-xl transition-colors hover:bg-[var(--glass-overlay-secondary)]"
+            >
+              <div className="flex items-center gap-3">
+                <Mail className="w-5 h-5" style={{ color: "var(--text-secondary)" }} />
+                <span style={{ color: "var(--text-primary)" }}>Contact Support</span>
+              </div>
+              <ExternalLink className="w-4 h-4" style={{ color: "var(--text-secondary)" }} />
+            </a>
+
+            <a
+              href="https://athletemindset.app/privacy"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-between p-3 rounded-xl transition-colors hover:bg-[var(--glass-overlay-secondary)]"
+            >
+              <div className="flex items-center gap-3">
+                <Shield className="w-5 h-5" style={{ color: "var(--text-secondary)" }} />
+                <span style={{ color: "var(--text-primary)" }}>Privacy Policy</span>
+              </div>
+              <ExternalLink className="w-4 h-4" style={{ color: "var(--text-secondary)" }} />
+            </a>
+
+            <a
+              href="https://athletemindset.app/terms"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-between p-3 rounded-xl transition-colors hover:bg-[var(--glass-overlay-secondary)]"
+            >
+              <div className="flex items-center gap-3">
+                <FileText className="w-5 h-5" style={{ color: "var(--text-secondary)" }} />
+                <span style={{ color: "var(--text-primary)" }}>Terms of Service</span>
+              </div>
+              <ExternalLink className="w-4 h-4" style={{ color: "var(--text-secondary)" }} />
+            </a>
+          </div>
+        </GlassCard>
+
+        {/* About Section */}
+        <GlassCard className="mb-6">
+          <h2
+            className="text-lg font-semibold mb-4 flex items-center gap-2"
+            style={{ color: "var(--text-primary)" }}
+          >
+            <Info className="w-5 h-5" style={{ color: "var(--accent-blue)" }} />
+            About
+          </h2>
+
+          <div className="space-y-3">
+            <div
+              className="flex items-center justify-between p-3 rounded-xl"
+              style={{ backgroundColor: "var(--glass-overlay-secondary)" }}
+            >
+              <span style={{ color: "var(--text-secondary)" }}>Version</span>
+              <span style={{ color: "var(--text-primary)" }}>1.0.0</span>
+            </div>
+            <div
+              className="flex items-center justify-between p-3 rounded-xl"
+              style={{ backgroundColor: "var(--glass-overlay-secondary)" }}
+            >
+              <span style={{ color: "var(--text-secondary)" }}>Platform</span>
+              <span style={{ color: "var(--text-primary)" }}>Web</span>
+            </div>
+          </div>
+        </GlassCard>
+
           {/* Sign Out */}
-          <GlassCard>
+          <GlassCard className="mb-6">
             <Button
               variant="ghost"
               onClick={handleSignOut}
@@ -718,6 +828,87 @@ export default function ProfilePage() {
               Sign Out
             </Button>
           </GlassCard>
+
+        {/* Danger Zone - Delete Account */}
+        <GlassCard>
+          <h2
+            className="text-lg font-semibold mb-4 flex items-center gap-2 text-red-500"
+          >
+            <AlertCircle className="w-5 h-5" />
+            Danger Zone
+          </h2>
+
+          {!showDeleteConfirm ? (
+            <div>
+              <p
+                className="text-sm mb-4"
+                style={{ color: "var(--text-secondary)" }}
+              >
+                Once you delete your account, there is no going back. All your data,
+                including check-ins, goals, and training sessions will be permanently deleted.
+              </p>
+              <Button
+                variant="ghost"
+                onClick={() => setShowDeleteConfirm(true)}
+                className="w-full border border-red-500/50 hover:bg-red-500/10"
+                style={{ color: "rgb(239, 68, 68)" }}
+              >
+                <Trash2 className="w-5 h-5 mr-2" />
+                Delete Account
+              </Button>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              <div
+                className="p-4 rounded-xl"
+                style={{ backgroundColor: "rgba(239, 68, 68, 0.1)" }}
+              >
+                <p className="text-sm text-red-400 mb-3">
+                  This action cannot be undone. Type <strong>DELETE</strong> to confirm.
+                </p>
+                <input
+                  type="text"
+                  value={deleteConfirmText}
+                  onChange={(e) => setDeleteConfirmText(e.target.value)}
+                  placeholder="Type DELETE to confirm"
+                  className="w-full px-4 py-2 rounded-lg bg-transparent border border-red-500/50 outline-none text-red-400 placeholder:text-red-400/50"
+                />
+              </div>
+
+              {deleteError && (
+                <p className="text-sm text-red-400">{deleteError}</p>
+              )}
+
+              <div className="flex gap-3">
+                <Button
+                  variant="ghost"
+                  onClick={() => {
+                    setShowDeleteConfirm(false);
+                    setDeleteConfirmText("");
+                    setDeleteError(null);
+                  }}
+                  className="flex-1"
+                  disabled={isDeleting}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  variant="ghost"
+                  onClick={handleDeleteAccount}
+                  className="flex-1 bg-red-500/20 hover:bg-red-500/30 text-red-400"
+                  disabled={deleteConfirmText.toUpperCase() !== "DELETE" || isDeleting}
+                >
+                  {isDeleting ? (
+                    <Loader2 className="w-5 h-5 animate-spin mr-2" />
+                  ) : (
+                    <Trash2 className="w-5 h-5 mr-2" />
+                  )}
+                  Delete Forever
+                </Button>
+              </div>
+            </div>
+          )}
+        </GlassCard>
         </div>
       </div>
     </AppShell>

@@ -20,11 +20,14 @@ import {
   TRAINING_GOALS,
   EXPERIENCE_LEVELS,
   AGE_RANGES,
-  SPORTS,
+  POPULAR_SPORTS,
+  ALL_SPORTS,
   type TrainingGoal,
   type ExperienceLevel,
   type AgeRange,
+  type SportOption,
 } from "@/types/user";
+import { Search, X } from "lucide-react";
 
 const STEPS = [
   { id: "goals", title: "Your Goals", icon: Target },
@@ -47,6 +50,23 @@ export default function OnboardingPage() {
   const [sport, setSport] = useState("");
   const [sportDiscipline, setSportDiscipline] = useState("");
   const [experienceLevel, setExperienceLevel] = useState<ExperienceLevel | "">("");
+
+  // Sport search state
+  const [sportSearch, setSportSearch] = useState("");
+
+  // Filter sports based on search
+  const filteredSports = sportSearch.trim() === ""
+    ? POPULAR_SPORTS
+    : ALL_SPORTS.filter((s) => {
+        const searchLower = sportSearch.toLowerCase();
+        // Match sport name
+        if (s.label.toLowerCase().includes(searchLower)) return true;
+        // Match disciplines
+        if (s.disciplines.some(d => d.toLowerCase().includes(searchLower))) return true;
+        // Match keywords (event names like "100m", "marathon")
+        if (s.keywords?.some(k => k.toLowerCase().includes(searchLower))) return true;
+        return false;
+      });
 
   const currentStepData = STEPS[currentStep];
   const isLastStep = currentStep === STEPS.length - 1;
@@ -105,7 +125,7 @@ export default function OnboardingPage() {
     );
   };
 
-  const selectedSport = SPORTS.find((s) => s.value === sport);
+  const selectedSport = ALL_SPORTS.find((s) => s.value === sport);
 
   return (
     <div className="w-full">
@@ -230,30 +250,82 @@ export default function OnboardingPage() {
                 <p className="mb-4" style={{ color: "var(--text-secondary)" }}>
                   What sport do you compete in?
                 </p>
-                <select
-                  value={sport}
-                  onChange={(e) => {
-                    setSport(e.target.value);
-                    setSportDiscipline("");
-                  }}
-                  className="w-full p-4 rounded-xl glass-card-compact border-0 focus:ring-2 focus:ring-[var(--accent-blue)] mb-3"
-                  style={{
-                    color: "var(--text-primary)",
-                    backgroundColor: "var(--glass-overlay-secondary)",
-                  }}
-                >
-                  <option value="">Select a sport</option>
-                  {SPORTS.map((s) => (
-                    <option key={s.value} value={s.value}>
-                      {s.label}
-                    </option>
-                  ))}
-                </select>
 
+                {/* Search input */}
+                <div className="relative mb-4">
+                  <Search
+                    className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5"
+                    style={{ color: "var(--text-secondary)" }}
+                  />
+                  <input
+                    type="text"
+                    value={sportSearch}
+                    onChange={(e) => setSportSearch(e.target.value)}
+                    placeholder="Search sports or events (e.g., 100m, marathon)"
+                    className="w-full pl-10 pr-10 py-3 rounded-xl border-0 focus:ring-2 focus:ring-[var(--accent-blue)]"
+                    style={{
+                      color: "var(--text-primary)",
+                      backgroundColor: "var(--glass-overlay-secondary)",
+                    }}
+                  />
+                  {sportSearch && (
+                    <button
+                      onClick={() => setSportSearch("")}
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 p-1 rounded-full hover:bg-[var(--glass-overlay-secondary)]"
+                    >
+                      <X className="w-4 h-4" style={{ color: "var(--text-secondary)" }} />
+                    </button>
+                  )}
+                </div>
+
+                {/* Section label */}
+                <p
+                  className="text-xs font-medium mb-3"
+                  style={{ color: "var(--text-secondary)" }}
+                >
+                  {sportSearch ? "Search Results" : "Popular Sports"}
+                </p>
+
+                {/* Sports grid */}
+                <div className="grid grid-cols-2 gap-3 max-h-[280px] overflow-y-auto pr-1">
+                  {filteredSports.length === 0 ? (
+                    <div className="col-span-2 py-8 text-center">
+                      <p style={{ color: "var(--text-secondary)" }}>
+                        No sports found. Try a different search.
+                      </p>
+                    </div>
+                  ) : (
+                    filteredSports.map((s) => (
+                      <button
+                        key={s.value}
+                        onClick={() => {
+                          setSport(s.value);
+                          setSportDiscipline("");
+                          setSportSearch("");
+                        }}
+                        className={`p-4 rounded-xl flex flex-col items-center gap-2 transition-all border-2 ${
+                          sport === s.value
+                            ? "border-[var(--accent-blue)] bg-[var(--accent-blue)]/10"
+                            : "border-transparent glass-card-compact hover:border-[var(--glass-border-primary)]"
+                        }`}
+                      >
+                        <span className="text-2xl">{s.emoji}</span>
+                        <span
+                          className="text-sm font-medium text-center"
+                          style={{ color: "var(--text-primary)" }}
+                        >
+                          {s.label}
+                        </span>
+                      </button>
+                    ))
+                  )}
+                </div>
+
+                {/* Discipline selection */}
                 {selectedSport && selectedSport.disciplines.length > 0 && (
-                  <div>
+                  <div className="mt-4 pt-4 border-t border-[var(--glass-border-primary)]">
                     <p
-                      className="text-sm mb-2"
+                      className="text-sm mb-3"
                       style={{ color: "var(--text-secondary)" }}
                     >
                       Select your discipline (optional)

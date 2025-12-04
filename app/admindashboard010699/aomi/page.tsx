@@ -36,7 +36,7 @@ export default function AomiPage() {
     whenToUse: '',
     videoGuidance: '',
     durationMinutes: 10,
-    difficultyLevel: 'beginner' as const,
+    difficultyLevel: 'beginner' as 'beginner' | 'intermediate' | 'advanced',
     isActive: true,
     loops: [{ loopNumber: 1, loopName: '', observationFocus: '', imageryFocus: '', observationDurationSeconds: 20, imageryDurationSeconds: 20 }] as AomiLoop[],
   });

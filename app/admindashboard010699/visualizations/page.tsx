@@ -99,7 +99,7 @@ export default function VisualizationsPage() {
     description: '',
     category: 'goal',
     supportedSports: 'any',
-    difficultyLevel: 'beginner' as const,
+    difficultyLevel: 'beginner' as 'beginner' | 'intermediate' | 'advanced',
     durationMinutes: 10,
     placeholders: '',
     scriptText: '',

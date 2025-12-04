@@ -24,6 +24,14 @@ const COLLECTIONS = {
   aomi: 'swift_aomi_techniques',
 };
 
+// Helper to get Firestore instance with type guard
+function getDb() {
+  if (!db) {
+    throw new Error('Firestore not initialized');
+  }
+  return db;
+}
+
 // Helper to convert Firestore timestamps
 function convertTimestamp(timestamp: Timestamp | Date | undefined): Date {
   if (timestamp instanceof Timestamp) {
@@ -39,7 +47,7 @@ function convertTimestamp(timestamp: Timestamp | Date | undefined): Date {
 
 export async function getVisualizations(): Promise<VisualizationTemplate[]> {
   const q = query(
-    collection(db, COLLECTIONS.visualizations),
+    collection(getDb(), COLLECTIONS.visualizations),
     orderBy('createdAt', 'desc')
   );
   const snapshot = await getDocs(q);
@@ -52,7 +60,7 @@ export async function getVisualizations(): Promise<VisualizationTemplate[]> {
 }
 
 export async function getVisualization(id: string): Promise<VisualizationTemplate | null> {
-  const docRef = doc(db, COLLECTIONS.visualizations, id);
+  const docRef = doc(getDb(), COLLECTIONS.visualizations, id);
   const snapshot = await getDoc(docRef);
   if (!snapshot.exists()) return null;
   return {
@@ -66,7 +74,7 @@ export async function getVisualization(id: string): Promise<VisualizationTemplat
 export async function createVisualization(
   data: Omit<VisualizationTemplate, 'id' | 'createdAt' | 'updatedAt'>
 ): Promise<string> {
-  const docRef = await addDoc(collection(db, COLLECTIONS.visualizations), {
+  const docRef = await addDoc(collection(getDb(), COLLECTIONS.visualizations), {
     ...data,
     createdAt: Timestamp.now(),
     updatedAt: Timestamp.now(),
@@ -78,7 +86,7 @@ export async function updateVisualization(
   id: string,
   data: Partial<Omit<VisualizationTemplate, 'id' | 'createdAt'>>
 ): Promise<void> {
-  const docRef = doc(db, COLLECTIONS.visualizations, id);
+  const docRef = doc(getDb(), COLLECTIONS.visualizations, id);
   await updateDoc(docRef, {
     ...data,
     updatedAt: Timestamp.now(),
@@ -86,7 +94,7 @@ export async function updateVisualization(
 }
 
 export async function deleteVisualization(id: string): Promise<void> {
-  const docRef = doc(db, COLLECTIONS.visualizations, id);
+  const docRef = doc(getDb(), COLLECTIONS.visualizations, id);
   await deleteDoc(docRef);
 }
 
@@ -94,7 +102,7 @@ export async function deleteVisualization(id: string): Promise<void> {
 
 export async function getBreathworkTechniques(): Promise<BreathworkTechnique[]> {
   const q = query(
-    collection(db, COLLECTIONS.breathwork),
+    collection(getDb(), COLLECTIONS.breathwork),
     orderBy('createdAt', 'desc')
   );
   const snapshot = await getDocs(q);
@@ -107,7 +115,7 @@ export async function getBreathworkTechniques(): Promise<BreathworkTechnique[]> 
 }
 
 export async function getBreathworkTechnique(id: string): Promise<BreathworkTechnique | null> {
-  const docRef = doc(db, COLLECTIONS.breathwork, id);
+  const docRef = doc(getDb(), COLLECTIONS.breathwork, id);
   const snapshot = await getDoc(docRef);
   if (!snapshot.exists()) return null;
   return {
@@ -121,7 +129,7 @@ export async function getBreathworkTechnique(id: string): Promise<BreathworkTech
 export async function createBreathworkTechnique(
   data: Omit<BreathworkTechnique, 'id' | 'createdAt' | 'updatedAt'>
 ): Promise<string> {
-  const docRef = await addDoc(collection(db, COLLECTIONS.breathwork), {
+  const docRef = await addDoc(collection(getDb(), COLLECTIONS.breathwork), {
     ...data,
     createdAt: Timestamp.now(),
     updatedAt: Timestamp.now(),
@@ -133,7 +141,7 @@ export async function updateBreathworkTechnique(
   id: string,
   data: Partial<Omit<BreathworkTechnique, 'id' | 'createdAt'>>
 ): Promise<void> {
-  const docRef = doc(db, COLLECTIONS.breathwork, id);
+  const docRef = doc(getDb(), COLLECTIONS.breathwork, id);
   await updateDoc(docRef, {
     ...data,
     updatedAt: Timestamp.now(),
@@ -141,7 +149,7 @@ export async function updateBreathworkTechnique(
 }
 
 export async function deleteBreathworkTechnique(id: string): Promise<void> {
-  const docRef = doc(db, COLLECTIONS.breathwork, id);
+  const docRef = doc(getDb(), COLLECTIONS.breathwork, id);
   await deleteDoc(docRef);
 }
 
@@ -149,7 +157,7 @@ export async function deleteBreathworkTechnique(id: string): Promise<void> {
 
 export async function getAomiTechniques(): Promise<AomiTechnique[]> {
   const q = query(
-    collection(db, COLLECTIONS.aomi),
+    collection(getDb(), COLLECTIONS.aomi),
     orderBy('createdAt', 'desc')
   );
   const snapshot = await getDocs(q);
@@ -162,7 +170,7 @@ export async function getAomiTechniques(): Promise<AomiTechnique[]> {
 }
 
 export async function getAomiTechnique(id: string): Promise<AomiTechnique | null> {
-  const docRef = doc(db, COLLECTIONS.aomi, id);
+  const docRef = doc(getDb(), COLLECTIONS.aomi, id);
   const snapshot = await getDoc(docRef);
   if (!snapshot.exists()) return null;
   return {
@@ -176,7 +184,7 @@ export async function getAomiTechnique(id: string): Promise<AomiTechnique | null
 export async function createAomiTechnique(
   data: Omit<AomiTechnique, 'id' | 'createdAt' | 'updatedAt'>
 ): Promise<string> {
-  const docRef = await addDoc(collection(db, COLLECTIONS.aomi), {
+  const docRef = await addDoc(collection(getDb(), COLLECTIONS.aomi), {
     ...data,
     createdAt: Timestamp.now(),
     updatedAt: Timestamp.now(),
@@ -188,7 +196,7 @@ export async function updateAomiTechnique(
   id: string,
   data: Partial<Omit<AomiTechnique, 'id' | 'createdAt'>>
 ): Promise<void> {
-  const docRef = doc(db, COLLECTIONS.aomi, id);
+  const docRef = doc(getDb(), COLLECTIONS.aomi, id);
   await updateDoc(docRef, {
     ...data,
     updatedAt: Timestamp.now(),
@@ -196,7 +204,7 @@ export async function updateAomiTechnique(
 }
 
 export async function deleteAomiTechnique(id: string): Promise<void> {
-  const docRef = doc(db, COLLECTIONS.aomi, id);
+  const docRef = doc(getDb(), COLLECTIONS.aomi, id);
   await deleteDoc(docRef);
 }
 
@@ -208,9 +216,9 @@ export async function getStats(): Promise<{
   aomi: number;
 }> {
   const [vizSnapshot, breathworkSnapshot, aomiSnapshot] = await Promise.all([
-    getDocs(collection(db, COLLECTIONS.visualizations)),
-    getDocs(collection(db, COLLECTIONS.breathwork)),
-    getDocs(collection(db, COLLECTIONS.aomi)),
+    getDocs(collection(getDb(), COLLECTIONS.visualizations)),
+    getDocs(collection(getDb(), COLLECTIONS.breathwork)),
+    getDocs(collection(getDb(), COLLECTIONS.aomi)),
   ]);
 
   return {

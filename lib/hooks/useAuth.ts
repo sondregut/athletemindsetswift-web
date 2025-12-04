@@ -11,8 +11,11 @@ import {
   updateProfile,
   signInWithPopup,
   GoogleAuthProvider,
+  deleteUser,
+  EmailAuthProvider,
+  reauthenticateWithCredential,
 } from "firebase/auth";
-import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
+import { doc, getDoc, setDoc, deleteDoc, serverTimestamp } from "firebase/firestore";
 import { auth, db } from "@/lib/firebase/client";
 
 export interface UserProfile {
@@ -311,6 +314,38 @@ export function useAuth() {
     return state.user.getIdToken();
   }, [state.user]);
 
+  // Delete account and all user data
+  const deleteAccount = useCallback(async (password?: string) => {
+    if (!auth || !db || !state.user) throw new Error("Not authenticated");
+
+    try {
+      // Re-authenticate if password provided (required for email/password users)
+      if (password && state.user.email) {
+        const credential = EmailAuthProvider.credential(state.user.email, password);
+        await reauthenticateWithCredential(state.user, credential);
+      }
+
+      // Delete user data from Firestore
+      const userDocRef = doc(db, "swift_users", state.user.uid);
+      await deleteDoc(userDocRef);
+
+      // Delete the Firebase Auth user
+      await deleteUser(state.user);
+
+      // Clear local state
+      setState({
+        user: null,
+        profile: null,
+        loading: false,
+        error: null,
+      });
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error.message : "Account deletion failed";
+      throw new Error(errorMessage);
+    }
+  }, [state.user]);
+
   return {
     user: state.user,
     profile: state.profile,
@@ -324,6 +359,7 @@ export function useAuth() {
     signInWithGoogle,
     updateUserProfile,
     getIdToken,
+    deleteAccount,
     refreshProfile: () =>
       state.user ? fetchProfile(state.user.uid) : Promise.resolve(null),
   };
